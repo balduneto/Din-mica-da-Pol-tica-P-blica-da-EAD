@@ -1,0 +1,435 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  BookOpen, 
+  Users, 
+  Building2, 
+  Scale, 
+  TrendingUp, 
+  AlertTriangle, 
+  CheckCircle, 
+  ArrowRight, 
+  GraduationCap,
+  Calendar,
+  FileText,
+  MonitorPlay,
+  MousePointer
+} from 'lucide-react';
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  Legend
+} from 'recharts';
+
+// --- DADOS E CONTEÚDO ---
+
+const enrollmentData = [
+  { ano: '2018', alunos: 2.0, label: '2 Milhões' },
+  { ano: '2020', alunos: 3.1, label: '3.1 Milhões' },
+  { ano: '2022', alunos: 4.3, label: '4.3 Milhões' },
+  { ano: '2024', alunos: 5.2, label: '5.2 Milhões' },
+];
+
+const poloData = [
+  { ano: '2018', polos: 15, label: '15 mil' },
+  { ano: '2020', polos: 25, label: '25 mil' },
+  { ano: '2022', polos: 38, label: '38 mil' },
+  { ano: '2024', polos: 50, label: '50 mil' },
+];
+
+const timelineEvents = [
+  {
+    year: "2017",
+    title: "A Flexibilização",
+    icon: <Scale className="w-6 h-6 text-red-500" />,
+    description: "Promulgação do Decreto 9.057. Permitiu a criação de cursos sem exigência de presencialidade e sem limites de vagas. Resultou em uma expansão desordenada.",
+    details: "O marco regulatório liberalizante permitiu que o setor privado dominasse 96% da oferta, focando em mensalidades baixas e alta escala."
+  },
+  {
+    year: "2023",
+    title: "O Diagnóstico",
+    icon: <AlertTriangle className="w-6 h-6 text-yellow-500" />,
+    description: "Entrada do tema na agenda governamental. Identificação da baixa qualidade (notas baixas no ENADE) e precariedade dos polos.",
+    details: "Consulta Pública com 15 mil contribuições. Discussão inicial sobre vedar EAD em Direito, Enfermagem, Odonto e Psicologia. Criação de GTs."
+  },
+  {
+    year: "2024",
+    title: "A Construção",
+    icon: <Users className="w-6 h-6 text-blue-500" />,
+    description: "Portaria 528: Suspensão de novos cursos e polos. Retomada do conselho CC-PARES e visitas técnicas para entender a realidade.",
+    details: "Foco mudou de 'proibir cursos' para 'definir critérios de qualidade'. Elaboração dos Referenciais de Qualidade por especialistas."
+  },
+  {
+    year: "2025",
+    title: "O Novo Marco",
+    icon: <CheckCircle className="w-6 h-6 text-green-500" />,
+    description: "Publicação do Decreto 12.456. Estabelecimento da 'Nova Política de EAD' focada na experiência do estudante e regulação firme.",
+    details: "Novos conceitos (híbrido/semipresencial), exigência de avaliação presencial e regulação de polos. Apoio de 44 entidades educacionais."
+  }
+];
+
+const qualityPillars = [
+  {
+    title: "Presencialidade Real",
+    icon: <Building2 className="w-8 h-8 text-indigo-600" />,
+    text: "Obrigação de avaliações presenciais e atividades práticas em polos adequados, não apenas 'salas comerciais'."
+  },
+  {
+    title: "Mediação Pedagógica",
+    icon: <Users className="w-8 h-8 text-indigo-600" />,
+    text: "Criação da figura do 'Mediador Pedagógico' e ênfase em momentos síncronos (ao vivo) para interação real."
+  },
+  {
+    title: "Sustentabilidade",
+    icon: <TrendingUp className="w-8 h-8 text-indigo-600" />,
+    text: "Fim da criação desenfreada de vagas. Limitação de polos baseada na qualidade institucional (CI)."
+  },
+  {
+    title: "Formatos Claros",
+    icon: <MonitorPlay className="w-8 h-8 text-indigo-600" />,
+    text: "Definição clara entre EAD Pleno, Semipresencial e Híbrido, acabando com a confusão de modalidades."
+  }
+];
+
+// --- COMPONENTES ---
+
+const SectionTitle = ({ children, subtitle }) => (
+  <div className="mb-8 text-center">
+    <h2 className="text-3xl font-bold text-gray-800 mb-2">{children}</h2>
+    {subtitle && <p className="text-gray-600 max-w-2xl mx-auto">{subtitle}</p>}
+  </div>
+);
+
+const Card = ({ children, className = "" }) => (
+  <div className={`bg-white rounded-xl shadow-lg p-6 transition-all hover:shadow-xl ${className}`}>
+    {children}
+  </div>
+);
+
+// --- APP PRINCIPAL ---
+
+export default function EadPolicyInfographic() {
+  const [activeTab, setActiveTab] = useState('cenario');
+  const [expandedTimeline, setExpandedTimeline] = useState(null);
+
+  // Scroll to top on tab change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeTab]);
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+      
+      {/* HEADER / HERO */}
+      <header className="bg-gradient-to-r from-blue-900 to-indigo-800 text-white pb-12 pt-12 px-4 shadow-xl">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="inline-block px-3 py-1 bg-blue-700 rounded-full text-xs font-semibold tracking-wide uppercase mb-4">
+            Baseado no artigo de Daniel Ximenes & Marta Abramo
+          </div>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+            Dinâmica da Política Pública da EAD
+            <span className="block text-blue-300 text-2xl md:text-3xl mt-2 font-light">2023 a 2025</span>
+          </h1>
+          <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto mt-6">
+            Uma jornada visual sobre como o Brasil saiu de uma expansão desordenada para um novo marco regulatório focado na qualidade do ensino superior.
+          </p>
+        </div>
+      </header>
+
+      {/* NAVIGATION */}
+      <nav className="sticky top-0 z-50 bg-white shadow-md border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex overflow-x-auto justify-center space-x-2 md:space-x-8 py-4">
+            {[
+              { id: 'cenario', label: '1. O Cenário', icon: <TrendingUp size={18} /> },
+              { id: 'timeline', label: '2. A Linha do Tempo', icon: <Calendar size={18} /> },
+              { id: 'novo-marco', label: '3. O Novo Marco', icon: <BookOpen size={18} /> },
+              { id: 'conclusao', label: '4. Conclusão', icon: <GraduationCap size={18} /> },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors whitespace-nowrap text-sm md:text-base ${
+                  activeTab === tab.id
+                    ? 'bg-blue-600 text-white font-bold'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-blue-600'
+                }`}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      {/* CONTENT AREA */}
+      <main className="max-w-6xl mx-auto px-4 py-12 min-h-[60vh]">
+        
+        {/* --- ABA 1: O CENÁRIO --- */}
+        {activeTab === 'cenario' && (
+          <div className="animate-fade-in-up">
+            <SectionTitle subtitle="Antes da regulação de 2025, o Brasil viveu uma explosão quantitativa da EAD, mas com sérios riscos à qualidade.">
+              O Boom da Expansão (2018-2024)
+            </SectionTitle>
+
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              <Card className="border-l-4 border-blue-500">
+                <h3 className="text-xl font-bold mb-4 flex items-center text-blue-800">
+                  <Users className="mr-2" /> Explosão de Matrículas
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Em 2024, a EAD representava <strong>51%</strong> de todas as matrículas do ensino superior. Um crescimento de <strong>150%</strong> em 5 anos.
+                </p>
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={enrollmentData}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="ano" />
+                      <YAxis hide />
+                      <Tooltip 
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                        formatter={(value) => [`${value} Milhões`, 'Alunos']}
+                      />
+                      <Bar dataKey="alunos" fill="#3b82f6" radius={[4, 4, 0, 0]} animationDuration={1500} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <p className="text-center text-sm text-gray-500 mt-2">Crescimento de Matrículas EAD</p>
+              </Card>
+
+              <Card className="border-l-4 border-green-500">
+                <h3 className="text-xl font-bold mb-4 flex items-center text-green-800">
+                  <Building2 className="mr-2" /> Proliferação de Polos
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  De 15 mil polos em 2018 para mais de <strong>50 mil</strong> em 2024. Muitos eram apenas salas comerciais sem infraestrutura acadêmica.
+                </p>
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={poloData}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="ano" />
+                      <YAxis hide />
+                      <Tooltip 
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                        formatter={(value) => [`${value} Mil`, 'Polos']}
+                      />
+                      <Line type="monotone" dataKey="polos" stroke="#22c55e" strokeWidth={4} dot={{ r: 6 }} animationDuration={1500} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                <p className="text-center text-sm text-gray-500 mt-2">Evolução do Número de Polos</p>
+              </Card>
+            </div>
+
+            <div className="bg-red-50 rounded-xl p-8 border border-red-100">
+              <h3 className="text-xl font-bold text-red-800 mb-4 flex items-center">
+                <AlertTriangle className="mr-2" /> O Paradoxo da Qualidade
+              </h3>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="font-bold text-gray-700 mb-2">Avaliação "In Loco" (MEC)</h4>
+                  <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-bold">
+                    90% dos cursos com notas 4 ou 5
+                  </div>
+                  <p className="text-sm text-gray-600 mt-2">
+                    Visitas agendadas mostravam uma realidade idealizada.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-700 mb-2">Resultado ENADE (Alunos)</h4>
+                  <div className="bg-red-100 text-red-800 px-4 py-2 rounded-lg font-bold">
+                    Maioria com conceitos 1 e 2
+                  </div>
+                  <p className="text-sm text-gray-600 mt-2">
+                    A prova real mostrava déficit grave de aprendizado.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* --- ABA 2: A LINHA DO TEMPO --- */}
+        {activeTab === 'timeline' && (
+          <div className="animate-fade-in-up">
+            <SectionTitle subtitle="Como a política pública foi construída: do problema à solução estrutural.">
+              A Construção da Política (2023-2025)
+            </SectionTitle>
+
+            <div className="relative">
+              {/* Linha vertical central */}
+              <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gray-200 rounded-full"></div>
+
+              <div className="space-y-12">
+                {timelineEvents.map((event, index) => (
+                  <div key={index} className={`relative flex flex-col md:flex-row ${index % 2 === 0 ? 'md:flex-row-reverse' : ''} items-center`}>
+                    
+                    {/* Conteúdo */}
+                    <div className="flex-1 w-full md:w-1/2 p-4">
+                      <div 
+                        className={`bg-white p-6 rounded-xl shadow-md border-t-4 hover:shadow-xl transition-all cursor-pointer ${
+                          expandedTimeline === index ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-300'
+                        }`}
+                        onClick={() => setExpandedTimeline(expandedTimeline === index ? null : index)}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-2xl font-bold text-slate-700">{event.year}</span>
+                          <div className="p-2 bg-gray-50 rounded-full">{event.icon}</div>
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-800 mb-2">{event.title}</h3>
+                        <p className="text-slate-600 text-sm leading-relaxed">
+                          {event.description}
+                        </p>
+                        
+                        {/* Detalhes Expansíveis */}
+                        <div className={`mt-4 pt-4 border-t border-gray-100 overflow-hidden transition-all duration-300 ${expandedTimeline === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                          <p className="text-sm text-blue-800 bg-blue-50 p-3 rounded-lg">
+                            <span className="font-bold">Detalhe:</span> {event.details}
+                          </p>
+                        </div>
+                        
+                        <div className="mt-2 text-center">
+                          <span className="text-xs text-gray-400 flex items-center justify-center gap-1">
+                            {expandedTimeline === index ? 'Clique para fechar' : 'Clique para saber mais'} <MousePointer size={12}/>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bolinha central */}
+                    <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 -mt-24 md:mt-0 flex items-center justify-center w-8 h-8 rounded-full bg-white border-4 border-blue-500 z-10">
+                    </div>
+                    
+                    {/* Espaço vazio para o outro lado */}
+                    <div className="hidden md:block flex-1 w-1/2"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* --- ABA 3: O NOVO MARCO --- */}
+        {activeTab === 'novo-marco' && (
+          <div className="animate-fade-in-up">
+            <SectionTitle subtitle="O Decreto 12.456 e a Portaria 506 de 2025 trazem uma revolução baseada em quatro pilares de qualidade.">
+              Os Pilares da Qualidade
+            </SectionTitle>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-12">
+              {qualityPillars.map((pillar, idx) => (
+                <Card key={idx} className="flex flex-col items-center text-center hover:-translate-y-1 duration-300">
+                  <div className="p-4 bg-indigo-50 rounded-full mb-4">
+                    {pillar.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">{pillar.title}</h3>
+                  <p className="text-gray-600">{pillar.text}</p>
+                </Card>
+              ))}
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-900 to-slate-800 rounded-2xl p-8 text-white shadow-2xl">
+              <div className="md:flex items-center gap-8">
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold mb-4 text-yellow-400">Mudança de Paradigma</h3>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="mt-1 bg-red-500/20 p-1 rounded text-red-300"><FileText size={16}/></div>
+                      <div>
+                        <span className="block text-sm text-gray-400 uppercase tracking-wider">Como era (2017)</span>
+                        Foco na liberdade de mercado e expansão rápida. Auto-regulação.
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="mt-1 bg-green-500/20 p-1 rounded text-green-300"><CheckCircle size={16}/></div>
+                      <div>
+                        <span className="block text-sm text-gray-400 uppercase tracking-wider">Como é (2025)</span>
+                        Foco na <strong>experiência do estudante</strong>, regulação forte e qualidade pedagógica comprovada.
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div className="flex-1 mt-8 md:mt-0 bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/10">
+                  <p className="italic text-lg text-blue-100">
+                    "Não se trata apenas de proibir cursos a distância, mas de exigir que a tecnologia sirva à pedagogia, e não apenas ao lucro."
+                  </p>
+                  <div className="mt-4 text-sm font-bold text-white">- Síntese da Nova Política</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* --- ABA 4: CONCLUSÃO --- */}
+        {activeTab === 'conclusao' && (
+          <div className="animate-fade-in-up flex flex-col items-center justify-center text-center">
+            <div className="bg-white p-10 rounded-2xl shadow-xl max-w-3xl border border-gray-100">
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <GraduationCap className="w-10 h-10 text-green-600" />
+              </div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-6">O Futuro da EAD é a Qualidade</h2>
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                A trajetória de 2023 a 2025 marcou o fim da era da "EAD desregulada". 
+                Com o apoio de 44 entidades educacionais e um novo marco legal, o Brasil caminha para um modelo onde o acesso não compete com a qualidade.
+                A EAD continua sendo vital para democratizar o ensino, mas agora com regras claras que protegem o estudante.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mt-8 pt-8 border-t border-gray-100">
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <span className="block font-bold text-blue-600 text-lg">Decreto 12.456</span>
+                  <span className="text-xs text-gray-500">A base legal</span>
+                </div>
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <span className="block font-bold text-blue-600 text-lg">Referenciais</span>
+                  <span className="text-xs text-gray-500">O guia de qualidade</span>
+                </div>
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <span className="block font-bold text-blue-600 text-lg">Avaliação</span>
+                  <span className="text-xs text-gray-500">O controle contínuo</span>
+                </div>
+              </div>
+              
+              <button 
+                onClick={() => setActiveTab('cenario')}
+                className="mt-10 flex items-center mx-auto text-blue-600 font-bold hover:text-blue-800 transition-colors"
+              >
+                Voltar ao início <ArrowRight className="ml-2 w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+      </main>
+
+      {/* FOOTER */}
+      <footer className="bg-gray-800 text-gray-400 py-8 text-center mt-12">
+        <div className="max-w-4xl mx-auto px-4">
+          <p className="mb-2">Desenvolvido com base no artigo: <em>Dinâmica da construção da política pública de 2023 a 2025</em></p>
+          <p className="text-sm">Autores: Daniel de Aquino Ximenes e Marta Wendel Abramo</p>
+          <div className="mt-4 pt-4 border-t border-gray-700 text-xs text-gray-500">
+            © 2025 Infográfico Educativo Interativo
+          </div>
+        </div>
+      </footer>
+
+      {/* Styles for simple animation */}
+      <style>{`
+        @keyframes fade-in-up {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+          animation: fade-in-up 0.5s ease-out forwards;
+        }
+      `}</style>
+    </div>
+  );
+}
